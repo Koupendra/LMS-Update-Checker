@@ -27,7 +27,7 @@ with open('Details.txt', 'w') as f:
         soup = BeautifulSoup(s.content, 'html.parser')
         part = soup.find_all("div", class_="card-body")
         part = str(part[1].encode("utf-8"))
-        patt = r"https\:\/\/lms\.ssn\.edu\.in\/mod\/resource\/view\.php\?id=\d+"
+        patt = r"/https\:\/\/lms\.ssn\.edu\.in\/mod\/[a-z]+\/view\.php\?id=\d+"
         match1 = "\n".join(re.findall(patt, part))
-        with open(course+".html", 'w') as f1:
+        with open(course+".txt", 'w') as f1:
             f1.write(match1)
