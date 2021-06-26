@@ -22,14 +22,15 @@ for course in courses:
     s = r.get(url, headers=head)
     soup = BeautifulSoup(s.content, 'html.parser')
     part = soup.find_all("div", class_="card-body")
-    with open(course+".html",'r+') as f:
+    with open(course+".txt",'r') as f:
         old_links = f.read()
-        part1 = str(part[1].encode("utf-8"))
-        patt = r"https\:\/\/lms\.ssn\.edu\.in\/mod\/resource\/view\.php\?id=\d+"
-        match1 = "\n".join(re.findall(patt, part1))
-        if match1 != old_links:
-            updates.append(course)
+    part1 = str(part[1].encode("utf-8"))
+    patt = r"https\:\/\/lms\.ssn\.edu\.in\/mod\/[a-z]+\/view\.php\?id=\d+"
+    match1 = "\n".join(re.findall(patt, part1))
+    if match1 != old_links:
+        updates.append(course.upper())
+        with open(course+".txt",'w') as f:        
             f.write(match1)
 if updates:
     toaster = ToastNotifier()
-    toaster.show_toast("LMS",', '.join(updates)+" has got updates",duration=10)
+    toaster.show_toast("LMS",', '.join(updates)+" has got updates",duration=20)
