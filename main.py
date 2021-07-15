@@ -1,36 +1,74 @@
-import requests,re
+import requests, re, sqlite3, warnings, time
 from bs4 import BeautifulSoup
-from win10toast import ToastNotifier
+from fake_useragent import UserAgent
+warnings.filterwarnings("ignore")
 
-head = {
-    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36"}
+ua = UserAgent()
+head = {'User-Agent':ua.chrome}
 url = "https://lms.ssn.edu.in/login/index.php"
-with open("Details.txt", 'r') as f:
-    user = f.readline().rstrip()
-    passwd = f.readline().rstrip()
-    temp = [i.rstrip() for i in f.readlines()]
+with open("Config", 'r') as f:
+	user = f.readline().rstrip()
+	passwd = f.readline().rstrip()
+	os = f.readline().rstrip()
+	if os=="Windows":
+		from win10toast import ToastNotifier
+	elif os=="Linux":
+		import notify2
+		notify2.init('LMS-Update-Checker')
+	else:
+		print("Unsupported Operating System! Exiting...")
+		exit(-1)
+conn = sqlite3.connect("Courses.db")
+cur = conn.cursor()
+
 courses = {}
-for i in temp:
-    t = i.split()
-    courses[t[0]] = t[1]
+cache = list(cur.execute("""SELECT * FROM Courses"""))
+for i in cache:
+	courses[i[0]] = i[1]
+
 data = {'username': user, 'password': passwd, 'anchor': ""}
 r = requests.Session()
-s = r.post(url, headers=head, data=data)
-updates = []
+s = r.post(url, headers=head, data=data, verify=False)
+
+
 for course in courses:
-    url = courses[course]
-    s = r.get(url, headers=head)
-    soup = BeautifulSoup(s.content, 'html.parser')
-    part = soup.find_all("div", class_="card-body")
-    with open(course+".txt",'r') as f:
-        old_links = f.read()
-    part1 = str(part[1].encode("utf-8"))
-    patt = r"https\:\/\/lms\.ssn\.edu\.in\/mod\/[a-z]+\/view\.php\?id=\d+"
-    match1 = "\n".join(re.findall(patt, part1))
-    if match1 != old_links:
-        updates.append(course.upper())
-        with open(course+".txt",'w') as f:        
-            f.write(match1)
-if updates:
-    toaster = ToastNotifier()
-    toaster.show_toast("LMS",', '.join(updates)+" has got updates",duration=20)
+        old_topics = list(cur.execute("SELECT titles from {}".format(course)))
+        old_topics = [j[0] for j in old_topics]
+        cur.execute("DELETE FROM {}".format(course))
+        url = courses[course]
+        s = r.get(url, headers=head).text
+        soup = BeautifulSoup(s, 'html.parser')
+        part = soup.find("ul", class_="topics")
+
+        updates = []
+        refresh = []
+        for section in part:
+                if not section:
+                        continue
+                sub = section.find_all("span", class_="instancename")
+
+                for item in sub:
+                        subpattern = r"""instancename\"\>(.+)\<span class=\"accesshide\"\>"""
+                        submatch = re.findall(subpattern, str(item))
+                        if not submatch:
+                                continue
+                        refresh.append(submatch[0])
+
+        for content in refresh:
+                if content not in old_topics:
+                        updates.append(content)
+                cur.execute("""INSERT INTO "{}" (Titles) VALUES ("{}")""".format(course, content))
+
+        if updates:
+                if os=="Linux":
+                        notify2.Notification("Summary", "Some body text","notification-message-im").show()
+                else:
+                        toaster = ToastNotifier()
+                        if len(updates)>1:
+                                toaster.show_toast("LMS-Update-Checker","{} has got {} and {} other update(s)".format(course.upper(), updates[0], len(updates)-1), icon_path="Moodle.ico", duration=15)
+                        else:
+                                toaster.show_toast("LMS-Update-Checker","{} has got {} update".format(course.upper(), updates[0]), icon_path="Moodle.ico", duration=15)
+                time.sleep(5)
+conn.commit()
+conn.close()
+r.close()
