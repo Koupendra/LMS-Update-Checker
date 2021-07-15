@@ -19,7 +19,7 @@ How To Use This?
 NOTE
 ----
 
-1. The `Details.txt` will contain your credentials for LMS, so make sure it's inaccessible by others.
-2. The project is still in development, so it will have bugs.
-3. This will work only on Windows 10 as of now (I will try to extend it for Linux in future).
+1. The `Config` file will contain your credentials for LMS, so make sure it's inaccessible by others.
+2. The project is still in development, so it might have bugs.
+3. This will work only on Windows 10 as of now (I will try to extend it for Linux in the near future).
 4. Turn off "Focus Assist" to receive notifications.
