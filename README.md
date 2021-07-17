@@ -3,7 +3,7 @@
 What Is This?
 -------------
 
-This is a Python application that gives a notification if any of the courses you enrolled in LMS has got updates.
+This is a Python application that gives a Desktop notification if any of the courses you enrolled in LMS has got updates.
 
 
 How To Use This?
