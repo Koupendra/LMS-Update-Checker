@@ -21,4 +21,4 @@ NOTE
 
 1. The `Config` file will contain your credentials for LMS, so make sure it's inaccessible by others.
 2. The project is still in development, so it might have bugs.
-4. Turn off "Focus Assist" or "Do not Disturb" mode to receive notifications.
+3. Turn off "Focus Assist" or "Do not Disturb" mode to receive notifications.
