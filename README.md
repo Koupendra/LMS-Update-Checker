@@ -13,7 +13,7 @@ How To Use This?
 2. Run `pip install -r requirements.txt` to install dependencies inside the project folder.
 3. Run `setup.py` and complete the setup.
 4. Run `main.py` (which is the acutal application).
-5. You can start and run this application at particular time intervals by configuring your Task Scheduler or Cronjobs.
+5. You can start and run this application at specific time intervals by configuring your Task Scheduler (Windows 10) or Cronjobs (Linux).
 
 
 NOTE
@@ -21,4 +21,4 @@ NOTE
 
 1. The `Config` file will contain your credentials for LMS, so make sure it's inaccessible by others.
 2. The project is still in development, so it might have bugs.
-4. Turn off "Focus Assist" or "Do not Disturb" mode to receive notifications.
+3. Turn off "Focus Assist" or "Do not Disturb" mode to receive notifications.
