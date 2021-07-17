@@ -33,7 +33,9 @@ if student_name not in s.text:
     print("Quitting setup...")
     time.sleep(5)
     exit(-1)
-    
+
+with open("Config", "w") as f:
+    f.write(f"{user}\n{passwd}")
 soup = BeautifulSoup(s.content, 'html.parser') 
 
 results = soup.find_all('a', class_="list-group-item list-group-item-action")
