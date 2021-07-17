@@ -9,11 +9,11 @@ This is a Python application that gives a Desktop notification if any of the cou
 How To Use This?
 ----------------
 
-1. Download the project according to your platform.
+1. Download the project from this directory if you're using Windows 10.
 2. Run `pip install -r requirements.txt` to install dependencies inside the project folder.
-3. Run `setup.py` and complete the setup.
-4. Run `main.py` (which is the acutal application).
-5. You can start and run this application at specific time intervals by configuring your Task Scheduler (Windows 10) or Cronjobs (Linux).
+3. Run `python setup.py` and complete the setup.
+4. Run `python main.py` (which is the acutal application).
+5. You can start and run this application at specific time intervals by configuring Task Scheduler.
 
 
 NOTE
